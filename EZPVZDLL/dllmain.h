@@ -1,0 +1,73 @@
+#pragma once
+#include "pch.h"
+#include "memory.h"
+
+int* memory::P2(int* 基址, int 偏移1)
+{
+	return (int*)(*基址 + 偏移1);
+}
+int* memory::P3(int* 基址, int 偏移1, int 偏移2)
+{
+	return (int*)(*(int*)(*基址 + 偏移1) + 偏移2);
+}
+int* memory::P4(int* 基址, int 偏移1, int 偏移2, int 偏移3)
+{
+	return (int*)(*(int*)(*(int*)(*基址 + 偏移1) + 偏移2) + 偏移3);
+}
+//上面的不用管
+///////////////////////////
+//         ////    //    //
+//  /////////////  //  ////
+//       ////////      ////
+//  ////////////   //   ///
+//  ///////////    //    //
+///////////////////////////
+//读取游戏内的阳光
+int* getsun() {
+	return memory::P3((int*)0x6a9ec0, 0x768, 0x5560);
+}
+//设置游戏内的阳光
+int setsun(int sun) {
+	int* i = memory::P3((int*)0x6a9ec0, 0x768, 0x5560);
+	*i = sun;
+	return sun;
+}
+//可以验证pvz版本是否符合要求，符合返回true，不符合返回false
+bool version() {
+	int* i = (int*)0x552013;
+	if (*i == 0xC35EDB74)
+		return true;
+	return false;
+}
+//判断游戏是否在关卡内
+bool baseaddress() {
+	int *i = memory::P2((int*)0x6a9ec0, 0x768);
+	if (*i != 0)
+		return true;
+	return false;
+}
+//[CALL]直接获胜
+void win() {
+	int i = 0x40c3e0;
+	int* j = memory::P2((int*)0x6a9ec0, 0x768);
+	int k = *j;
+	_asm {
+		mov ecx,k
+		call i
+	}
+}
+//获取游戏HWND
+HWND gethwnd() {
+	int* i = memory::P2((int*)0x6a9ec0, 0x350);
+	return (HWND)*i;
+}
+//读取游戏内关卡场景
+int* getlevelscene() {
+	return memory::P3((int*)0x6a9ec0, 0x768, 0x554c);
+}
+//设置游戏内关卡场景
+int setlevelscene(int Scene) {
+	int* i = memory::P3((int*)0x6a9ec0, 0x768, 0x554c);
+	*i = Scene;
+	return 0;
+}
