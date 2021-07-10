@@ -3,6 +3,7 @@
 #include "dllmain.h"
 #include <tchar.h>
 #include <cstring>
+#include "Button.h"
 using namespace std;
 //6月30日 弹出了第一个dll注入成功窗口
 
@@ -16,11 +17,10 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
 		
         if (version()) 
         {
+			Buttons(hModule);
 			MessageBoxA(gethwnd(), "注入成功！", "EasyPVZ Framework", MB_OK | MB_ICONASTERISK);
 			//在这里写代码
 			if (baseaddress()) {
-				setsun(222);
-				setlevelscene(*getlevelscene() + 2);
 			}
 			else
 				MessageBoxA(gethwnd(), "不在关卡内。", "NONE", MB_OK | MB_ICONWARNING);

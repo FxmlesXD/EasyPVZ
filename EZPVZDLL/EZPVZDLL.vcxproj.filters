@@ -13,7 +13,7 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Enums">
+    <Filter Include="menus">
       <UniqueIdentifier>{c06278a1-ad1c-4c60-9ca1-46d4cb6b7d3b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -29,6 +29,9 @@
     </ClInclude>
     <ClInclude Include="dllmain.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Button.h">
+      <Filter>menus</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
