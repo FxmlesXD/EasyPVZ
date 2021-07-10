@@ -7,6 +7,11 @@
 using namespace std;
 //6月30日 弹出了第一个dll注入成功窗口
 
+int 信息框(LPCSTR 内容,LPCSTR 标题,UINT 类型（比如按钮_MB_OK和MB_YESNO_或图标MB_ICONERROR）) {
+	MessageBoxA(PVZ::gethwnd(), 内容, 标题, 类型（比如按钮_MB_OK和MB_YESNO_或图标MB_ICONERROR）);
+	return 0;
+}
+
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)
 {
 	
@@ -15,18 +20,23 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
     case DLL_PROCESS_ATTACH://dll注入成功执行的代码。
         DisableThreadLibraryCalls(hModule);
 		
-        if (version()) 
+        if (PVZ::version())
         {
 			Buttons(hModule);
-			MessageBoxA(gethwnd(), "注入成功！", "EasyPVZ Framework", MB_OK | MB_ICONASTERISK);
-			//在这里写代码
-			if (baseaddress()) {
+			信息框("注入成功！", "", MB_OK | MB_ICONASTERISK);
+			//
+			if (PVZ::baseaddress()) {
+				if (PVZ::getlevel() == PVZLevel::Adventure) {
+					PVZ::setsun(66666);
+
+					
+				}
 			}
 			else
-				MessageBoxA(gethwnd(), "不在关卡内。", "NONE", MB_OK | MB_ICONWARNING);
+				return 1;
         }
         else
-            MessageBoxA(gethwnd(), "注入失败，请检查你的植物大战僵尸版本！", "EasyPVZ Framework", MB_OK|MB_ICONERROR);
+            MessageBoxA(PVZ::gethwnd(), "注入失败！", "", MB_OK|MB_ICONERROR);
     case DLL_THREAD_ATTACH:
     case DLL_THREAD_DETACH:
     case DLL_PROCESS_DETACH:

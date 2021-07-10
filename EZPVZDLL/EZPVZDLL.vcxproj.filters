@@ -16,6 +16,9 @@
     <Filter Include="menus">
       <UniqueIdentifier>{c06278a1-ad1c-4c60-9ca1-46d4cb6b7d3b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Enums">
+      <UniqueIdentifier>{cf77b7b3-f937-480d-922b-5d555b6f582c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -33,6 +36,15 @@
     <ClInclude Include="Button.h">
       <Filter>menus</Filter>
     </ClInclude>
+    <ClInclude Include="Level.h">
+      <Filter>Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="Enums.h">
+      <Filter>Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Enums</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -40,6 +52,12 @@
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Level.cpp">
+      <Filter>Enums</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Enums</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

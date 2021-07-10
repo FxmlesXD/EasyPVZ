@@ -4,7 +4,7 @@
 #include <iostream>
 #include "dllmain.h"
 #define BUTTON_1 3300
-#define LABEL_1 3301
+#define BUTTON_2 3301
 //extern "C" _declspec(dllexport)
 LONG OldWindowProc, Button1Proc;
 HWND pro_hwnd;               //³ÌÐò¾ä±ú
@@ -13,9 +13,10 @@ DWORD pro_base = NULL;      //³ÌÐò»ùµØÖ·
 char szBuf[1024] = { 0 };
 LRESULT CALLBACK NewWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 HWND pause;
+HWND sun;
 
 int kill() {
-	pro_hwnd = gethwnd();
+	pro_hwnd = PVZ::gethwnd();
 	DWORD pro_id;
 	GetWindowThreadProcessId(pro_hwnd, &pro_id);
 	hpro = OpenProcess(PROCESS_CREATE_THREAD | PROCESS_VM_OPERATION | PROCESS_VM_WRITE | PROCESS_VM_READ | PROCESS_QUERY_INFORMATION, FALSE, pro_id);
@@ -48,7 +49,16 @@ DWORD APIENTRY Msg(LPVOID lpParameter)
 		NULL, //(HINSTANCE)GetWindowLongPtr((HWND)lpParameter,GWLP_HWNDPARENT)
 		NULL);
 
-	HFONT hf = CreateFont(16,                                                 //   nHeight 
+	sun = CreateWindow(TEXT("BUTTON"),
+		TEXT("Ôö¼ÓÑô¹â"),
+		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+		685, 53, 110, 25,
+		pro_hwnd,
+		(HMENU)BUTTON_2,
+		NULL, //(HINSTANCE)GetWindowLongPtr((HWND)lpParameter,GWLP_HWNDPARENT)
+		NULL);
+
+	HFONT hf = CreateFont(24,                                                 //   nHeight 
 		0,                                                   //   nWidth 
 		0,                                                   //   nEscapement 
 		0,                                                   //   nOrientation 
@@ -63,37 +73,9 @@ DWORD APIENTRY Msg(LPVOID lpParameter)
 		DEFAULT_PITCH | FF_SWISS,     //   nPitchAndFamily 
 		TEXT("Î¢ÈíÑÅºÚ"));                           //   lpszFacename 
 
-	HFONT pf = CreateFont(24,                                                 //   nHeight 
-		0,                                                   //   nWidth 
-		0,                                                   //   nEscapement 
-		0,                                                   //   nOrientation 
-		FW_BOLD,                                       //   nWeight 
-		FALSE,                                           //   bItalic 
-		FALSE,                                           //   bUnderline 
-		0,                                                   //   cStrikeOut 
-		DEFAULT_CHARSET,                       //   nCharSet 
-		OUT_DEFAULT_PRECIS,                 //   nOutPrecision 
-		CLIP_DEFAULT_PRECIS,               //   nClipPrecision 
-		DEFAULT_QUALITY,                       //   nQuality 
-		DEFAULT_PITCH | FF_SWISS,     //   nPitchAndFamily 
-		TEXT("Î¢ÈíÑÅºÚ"));
-
-		// Create message label
-	HWND pvzline = CreateWindow(
-		TEXT("STATIC"),                   /*The name of the static control's class*/
-		TEXT("PVZLine"),                  /*Label's Text*/
-		WS_CHILD | WS_VISIBLE | SS_CENTER,  /*Styles (continued)*/
-		5,                                /*X co-ordinates*/
-		5,                                /*Y co-ordinates*/
-		50,                               /*Width*/
-		15,                               /*Height*/
-		pro_hwnd,                             /*Parent HWND*/
-		(HMENU)LABEL_1,              /*The Label's ID*/
-		NULL,                        /*The HINSTANCE of your program*/
-		NULL);
 	//set font we defined
-	SendMessage(pvzline, WM_SETFONT, (WPARAM)hf, TRUE);
-	SendMessageW(pause, WM_SETFONT, (WPARAM)pf, TRUE);
+	SendMessageW(pause, WM_SETFONT, (WPARAM)hf, TRUE);
+	SendMessageW(sun, WM_SETFONT, (WPARAM)hf, TRUE);
 	OldWindowProc = GetWindowLong(pro_hwnd, GWL_WNDPROC);
 	SetWindowLong(pro_hwnd, GWL_WNDPROC, (LONG)NewWndProc);
 
@@ -136,8 +118,8 @@ LRESULT CALLBACK NewWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 				SendMessageA(pause, WM_SETTEXT, 0, (LPARAM)"»Ö¸´");
 			}
 			break;
-		case LABEL_1:
-
+		case BUTTON_2:
+			PVZ::setsun((int)PVZ::getsun() + 1000);
 		default:
 			return  CallWindowProc((WNDPROC)OldWindowProc, hWnd, message, wParam, lParam);
 		}
