@@ -25,8 +25,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
 			信息框("注入成功！", "", MB_OK | MB_ICONASTERISK);
 			///
 			if (PVZ::baseaddress()) {
-				Creater::CreatePlant(1, 1, PlantType::Blover);
-				Creater::CreateZombie(1, 1, ZombieType::BackupDancer);
+				
 			}
 			else
 				return 1;

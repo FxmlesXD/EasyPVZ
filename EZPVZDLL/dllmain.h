@@ -116,5 +116,16 @@ namespace Creater {
 		}
 		return 0;
 	}
+	int CreateZombie(int 行, int 列, int 僵尸类型) {
+		int* i = memory::P3((int*)0x6a9ec0, 0x768, 0x160);
+		int j = *i;
+		int cal = 0x42A0F0;
+		_asm {
+			mov ecx,j
+			mov eax,行
+			push 列
+			push 僵尸类型
+			call cal
+		}
 	}
 }

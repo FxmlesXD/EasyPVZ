@@ -4,6 +4,7 @@
 #include <iostream>
 #include "dllmain.h"
 #define BUTTON_1 3300
+#define WINBUTTON 3301
 //extern "C" _declspec(dllexport)
 LONG OldWindowProc, Button1Proc;
 HWND pro_hwnd;               //程序句柄
@@ -38,34 +39,17 @@ int kill() {
 DWORD APIENTRY Msg(LPVOID lpParameter)
 {
 	char szBuf[1024] = { 0 };
-	//hwnd = FindWindow(NULL, TEXT("wintest"));
-	pause = CreateWindow(TEXT("BUTTON"),
-		TEXT("暂停"),
-		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-		685, 33, 110, 25,
-		pro_hwnd,
-		(HMENU)BUTTON_1,
-		NULL, //(HINSTANCE)GetWindowLongPtr((HWND)lpParameter,GWLP_HWNDPARENT)
-		NULL);
+	HWND pause = CreateWindowW(TEXT("BUTTON"), TEXT("暂停BUTTON"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 685, 33, 110, 25, pro_hwnd, (HMENU)BUTTON_1, NULL, NULL);
+	HWND win = CreateWindowW(TEXT("BUTTON"), TEXT("获胜"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 685, 66, 50, 50, pro_hwnd, (HMENU)WINBUTTON, NULL, NULL);
+	
+	HFONT 微软雅黑 = CreateFont(16, 0, 0, 0, FW_BOLD, FALSE, FALSE, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, TEXT("微软雅黑"));
+	HFONT 宋体 = CreateFont(16, 0, 0, 0, FW_BOLD, FALSE, FALSE, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, TEXT("宋体"));
+	
+	
+	//这里给按钮发送信息：改变字体
+	//SendMessage(pause, WM_SETFONT, (WPARAM)宋体, TRUE);
+	//SendMessage(win, WM_SETFONT, (WPARAM)宋体, TRUE);
 
-	HFONT hf = CreateFont(24,                                                 //   nHeight 
-		0,                                                   //   nWidth 
-		0,                                                   //   nEscapement 
-		0,                                                   //   nOrientation 
-		FW_BOLD,                                       //   nWeight 
-		FALSE,                                           //   bItalic 
-		FALSE,                                           //   bUnderline 
-		0,                                                   //   cStrikeOut 
-		DEFAULT_CHARSET,                       //   nCharSet 
-		OUT_DEFAULT_PRECIS,                 //   nOutPrecision 
-		CLIP_DEFAULT_PRECIS,               //   nClipPrecision 
-		DEFAULT_QUALITY,                       //   nQuality 
-		DEFAULT_PITCH | FF_SWISS,     //   nPitchAndFamily 
-		TEXT("微软雅黑"));                           //   lpszFacename 
-
-	//set font we defined
-	SendMessageW(pause, WM_SETFONT, (WPARAM)hf, TRUE);
-	SendMessageW(sun, WM_SETFONT, (WPARAM)hf, TRUE);
 	OldWindowProc = GetWindowLong(pro_hwnd, GWL_WNDPROC);
 	SetWindowLong(pro_hwnd, GWL_WNDPROC, (LONG)NewWndProc);
 
@@ -74,6 +58,9 @@ DWORD APIENTRY Msg(LPVOID lpParameter)
 	{
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
+		if (PVZ::baseaddress == 0) {
+			
+		}
 	}
 
 	return 0;
@@ -107,6 +94,9 @@ LRESULT CALLBACK NewWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 				*i = 1;
 				SendMessageA(pause, WM_SETTEXT, 0, (LPARAM)"恢复");
 			}
+			break;
+		case WINBUTTON:
+			PVZ::win();
 			break;
 		default:
 			return  CallWindowProc((WNDPROC)OldWindowProc, hWnd, message, wParam, lParam);
