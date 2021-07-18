@@ -4,7 +4,6 @@
 #include <iostream>
 #include "dllmain.h"
 #define BUTTON_1 3300
-#define BUTTON_2 3301
 //extern "C" _declspec(dllexport)
 LONG OldWindowProc, Button1Proc;
 HWND pro_hwnd;               //程序句柄
@@ -46,15 +45,6 @@ DWORD APIENTRY Msg(LPVOID lpParameter)
 		685, 33, 110, 25,
 		pro_hwnd,
 		(HMENU)BUTTON_1,
-		NULL, //(HINSTANCE)GetWindowLongPtr((HWND)lpParameter,GWLP_HWNDPARENT)
-		NULL);
-
-	sun = CreateWindow(TEXT("BUTTON"),
-		TEXT("增加阳光"),
-		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-		685, 53, 110, 25,
-		pro_hwnd,
-		(HMENU)BUTTON_2,
 		NULL, //(HINSTANCE)GetWindowLongPtr((HWND)lpParameter,GWLP_HWNDPARENT)
 		NULL);
 
@@ -118,8 +108,6 @@ LRESULT CALLBACK NewWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 				SendMessageA(pause, WM_SETTEXT, 0, (LPARAM)"恢复");
 			}
 			break;
-		case BUTTON_2:
-			PVZ::setsun((int)PVZ::getsun() + 1000);
 		default:
 			return  CallWindowProc((WNDPROC)OldWindowProc, hWnd, message, wParam, lParam);
 		}

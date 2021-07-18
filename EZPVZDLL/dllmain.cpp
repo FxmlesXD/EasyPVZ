@@ -19,18 +19,14 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
     {
     case DLL_PROCESS_ATTACH://dll注入成功执行的代码。
         DisableThreadLibraryCalls(hModule);
-		
         if (PVZ::version())
         {
 			Buttons(hModule);
 			信息框("注入成功！", "", MB_OK | MB_ICONASTERISK);
 			//
 			if (PVZ::baseaddress()) {
-				if (PVZ::getlevel() == PVZLevel::Adventure) {
-					PVZ::setsun(66666);
-
-					
-				}
+				Creater::CreatePlant(1, 1, PlantType::Blover);
+				Creater::CreateZombie(1, 1, ZombieType::BackupDancer);
 			}
 			else
 				return 1;

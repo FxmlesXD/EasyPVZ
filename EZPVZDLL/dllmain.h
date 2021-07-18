@@ -98,3 +98,23 @@ namespace PVZ {
 		return 关卡;
 	}
 }
+namespace Creater {
+	//创建一个植物 第三个参数填写方法：PlantType::植物类型
+	int CreatePlant(int 行, int 列, PlantType::PlantType 植物类型) {
+		int* i = memory::P2((int*)0x6a9ec0, 0x768);
+		int j = *i;
+		int k = 0x40D120;
+		int l = 植物类型;
+		_asm {
+			mov ecx,j 
+			push 100
+			push l
+			mov eax, 行
+			push 列
+			push ecx
+			call k
+		}
+		return 0;
+	}
+	}
+}
