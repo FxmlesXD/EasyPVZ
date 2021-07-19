@@ -2,6 +2,7 @@
 #include "pch.h"
 #include "memory.h"
 #include "Enums.h"
+#include <windef.h>
 
 int* memory::P2(int* 基址, int 偏移1)
 {
@@ -50,16 +51,6 @@ namespace PVZ {
 			return true;
 		return false;
 	}
-	//[CALL]直接获胜
-	void win() {
-		int i = 0x40c3e0;
-		int* j = memory::P2((int*)0x6a9ec0, 0x768);
-		int k = *j;
-		_asm {
-			mov ecx, k
-			call i
-		}
-	}
 	//获取游戏HWND
 	HWND gethwnd() {
 		int* i = memory::P2((int*)0x6a9ec0, 0x350);
@@ -100,15 +91,14 @@ namespace PVZ {
 }
 namespace Creater {
 	//创建一个植物 第三个参数填写方法：PlantType::植物类型
-	int CreatePlant(int 行, int 列, PlantType::PlantType 植物类型) {
+	int CreatePlant(int 行, int 列, int 植物类型) {
 		int* i = memory::P2((int*)0x6a9ec0, 0x768);
 		int j = *i;
 		int k = 0x40D120;
-		int l = 植物类型;
 		_asm {
 			mov ecx,j 
-			push 100
-			push l
+			push 10
+			push 植物类型
 			mov eax, 行
 			push 列
 			push ecx
@@ -116,16 +106,40 @@ namespace Creater {
 		}
 		return 0;
 	}
-	int CreateZombie(int 行, int 列, int 僵尸类型) {
+	int CreateZombie(int 行, signed char 列, int 僵尸类型) {
 		int* i = memory::P3((int*)0x6a9ec0, 0x768, 0x160);
 		int j = *i;
 		int cal = 0x42A0F0;
 		_asm {
-			mov ecx,j
-			mov eax,行
+			mov ecx, j
+			mov eax, 行
 			push 列
-			push 僵尸类型
+			push 15
 			call cal
 		}
+		return 0;
+	}
+}
+namespace calls {
+	//[CALL]直接获胜
+	void win() {
+		int i = 0x40c3e0;
+		int* j = memory::P2((int*)0x6a9ec0, 0x768);
+		int k = *j;
+		_asm {
+			mov ecx, k
+			call i
+		}
+	}
+	//[CALL]寒冰菇冻结
+	int Freeze() {
+		int* i = memory::P3((int*)0x6a9ec0, 0x768, 0xAC);
+		int j = *i;
+		int cal = 0x466420;
+		_asm {
+			mov edi,i
+			call cal
+		}
+		return 0;
 	}
 }
