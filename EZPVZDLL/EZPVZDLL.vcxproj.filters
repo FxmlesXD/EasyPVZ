@@ -51,6 +51,9 @@
     <ClInclude Include="Plant.h">
       <Filter>Enums</Filter>
     </ClInclude>
+    <ClInclude Include="Menu.h">
+      <Filter>Enums</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -69,6 +72,9 @@
       <Filter>Enums</Filter>
     </ClCompile>
     <ClCompile Include="Plant.cpp">
+      <Filter>Enums</Filter>
+    </ClCompile>
+    <ClCompile Include="Menu.cpp">
       <Filter>Enums</Filter>
     </ClCompile>
   </ItemGroup>

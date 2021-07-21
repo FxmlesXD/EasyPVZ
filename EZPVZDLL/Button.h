@@ -1,20 +1,22 @@
-// dllmain.cpp : ¶¨Òå DLL Ó¦ÓÃ³ÌĞòµÄÈë¿Úµã¡£
+ï»¿// dllmain.cpp : å®šä¹‰ DLL åº”ç”¨ç¨‹åºçš„å…¥å£ç‚¹ã€‚
 #include <stdio.h>
 #include <psapi.h>
 #include <iostream>
 #include "dllmain.h"
 #define BUTTON_1 3300
 #define WINBUTTON 3301
+#define UNLOCK 3302
 //extern "C" _declspec(dllexport)
 LONG OldWindowProc, Button1Proc;
-HWND pro_hwnd;               //³ÌĞò¾ä±ú
-HANDLE hpro;                //½ø³Ì¾ä±ú
-DWORD pro_base = NULL;      //³ÌĞò»ùµØÖ·
+HWND pro_hwnd;               //ç¨‹åºå¥æŸ„
+HANDLE hpro;                //è¿›ç¨‹å¥æŸ„
+DWORD pro_base = NULL;      //ç¨‹åºåŸºåœ°å€
 char szBuf[1024] = { 0 };
 LRESULT CALLBACK NewWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 HWND pause;
 HWND win;
+HWND unlock;
 
 int kill() {
 	pro_hwnd = PVZ::gethwnd();
@@ -33,15 +35,17 @@ int kill() {
 DWORD APIENTRY Msg(LPVOID lpParameter)
 {
 	char szBuf[1024] = { 0 };
-	pause = CreateWindowW(TEXT("BUTTON"), TEXT("ÔİÍ£"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 685, 33, 110, 25, pro_hwnd, (HMENU)BUTTON_1, NULL, NULL);
-	win = CreateWindowW(TEXT("BUTTON"), TEXT("»ñÊ¤"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 685, 66, 50, 50, pro_hwnd, (HMENU)WINBUTTON, NULL, NULL);
+	pause = CreateWindowW(TEXT("BUTTON"), TEXT("æš‚åœ"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 685, 33, 110, 25, pro_hwnd, (HMENU)BUTTON_1, NULL, NULL);
+	win = CreateWindowW(TEXT("BUTTON"), TEXT("è·³å…³"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 685, 66, 50, 50, pro_hwnd, (HMENU)WINBUTTON, NULL, NULL);
+	unlock = CreateWindowW(TEXT("BUTTON"), TEXT("unlock"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 685, 66, 50, 50, pro_hwnd, (HMENU)WINBUTTON, NULL, NULL);
 
-	HFONT Î¢ÈíÑÅºÚ = CreateFont(16, 0, 0, 0,FW_NORMAL , FALSE, FALSE, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, TEXT("Î¢ÈíÑÅºÚ"));
-	HFONT ËÎÌå = CreateFont(16, 0, 0, 0, FW_NORMAL, FALSE, FALSE, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, TEXT("ËÎÌå"));
+	HFONT å¾®è½¯é›…é»‘ = CreateFont(16, 0, 0, 0,FW_NORMAL , FALSE, FALSE, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, TEXT("å¾®è½¯é›…é»‘"));
+	HFONT å®‹ä½“ = CreateFont(16, 0, 0, 0, FW_NORMAL, FALSE, FALSE, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, TEXT("å®‹ä½“"));
 	
-	//ÕâÀï¸ø°´Å¥·¢ËÍĞÅÏ¢£º¸Ä±ä×ÖÌå
-	SendMessage(pause, WM_SETFONT, (WPARAM)ËÎÌå, TRUE);
-	SendMessage(win, WM_SETFONT, (WPARAM)ËÎÌå, TRUE);
+	//è¿™é‡Œç»™æŒ‰é’®å‘é€ä¿¡æ¯ï¼šæ”¹å˜å­—ä½“
+	SendMessage(pause, WM_SETFONT, (WPARAM)å®‹ä½“, TRUE);
+	SendMessage(win, WM_SETFONT, (WPARAM)å®‹ä½“, TRUE);
+	SendMessage(unlock, WM_SETFONT, (WPARAM)å®‹ä½“, TRUE);
 
 	OldWindowProc = GetWindowLong(pro_hwnd, GWL_WNDPROC);
 	SetWindowLong(pro_hwnd, GWL_WNDPROC, (LONG)NewWndProc);
@@ -64,29 +68,26 @@ LRESULT CALLBACK NewWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 	case WM_COMMAND:
 		wmId = LOWORD(wParam);
 		wmEvent = HIWORD(wParam);
-		// ·ÖÎö²Ëµ¥Ñ¡Ôñ:
+		// åˆ†æèœå•é€‰æ‹©:
 		int* i;
 		int* jjj;
 		switch (wmId)
 		{
 		case BUTTON_1:
-			i = memory::P3((int*)0x6a9ec0, 0x768, 0x164);
-			jjj = memory::P2((int*)0x6a9ec0, 0x768);
-			if (*jjj == 0) {
-				SendMessage(pause, WM_DELETEITEM, 0, 0);
-				break;
-			}
-			if (*i == 1) {
-				*i = 0;
-				SendMessageA(pause, WM_SETTEXT, 0, (LPARAM)"ÔİÍ£");
+			if (PVZ::getpause() == true) {
+				PVZ::setpause(0);
+				SendMessageA(pause, WM_SETTEXT, 0, (LPARAM)"æš‚åœ");
 			}
 			else {
-				*i = 1;
-				SendMessageA(pause, WM_SETTEXT, 0, (LPARAM)"»Ö¸´");
+				PVZ::setpause(1);
+				SendMessageA(pause, WM_SETTEXT, 0, (LPARAM)"æ¢å¤");
 			}
 			break;
 		case WINBUTTON:
 				calls::win();
+			 break;
+		case UNLOCK:
+			
 			break;
 		default:
 			return  CallWindowProc((WNDPROC)OldWindowProc, hWnd, message, wParam, lParam);
@@ -100,22 +101,23 @@ LRESULT CALLBACK NewWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 
 DWORD WINAPI dowhile(LPVOID lpParameter) {
 	while (1) {
-		int* jjj;
-		jjj = memory::P2((int*)0x6a9ec0, 0x768);
-		if (*jjj == 0) {
+		if (PVZ::baseaddress == 0) {
 			ShowWindow(pause, 0);
 			ShowWindow(win, 0);
+			ShowWindow(unlock, 0);
 		}
 		else {
 			ShowWindow(pause, 5);
 			ShowWindow(win, 5);
+			ShowWindow(unlock, 5);
 		}
-		Sleep(1000);
+
+		Sleep(500);
 	}
 	return 0;
 }
 
-//Éú³ÉÔÚButton.h¶¨ÒåµÄÈ«²¿°´Å¥¡£Õâ²¿·ÖÓĞµã¸´ÔÓ£¬ÏëÒªĞÂÔö°´Å¥ÓÖ¿´²»¶®µÄ¿É¼Óqq2537237248°ïÃ¦¡£
+//ç”Ÿæˆåœ¨Button.hå®šä¹‰çš„å…¨éƒ¨æŒ‰é’®ã€‚è¿™éƒ¨åˆ†æœ‰ç‚¹å¤æ‚ï¼Œæƒ³è¦æ–°å¢æŒ‰é’®åˆçœ‹ä¸æ‡‚çš„å¯åŠ qq2537237248å¸®å¿™ã€‚
 void Buttons(HMODULE hModule) {
 	kill();
 	CreateThread(NULL, 0, Msg, hModule, 0, NULL);

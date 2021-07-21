@@ -6,10 +6,11 @@
 #include "Button.h"
 using namespace std;
 
-int 信息框(LPCSTR 内容,LPCSTR 标题,UINT 类型（比如按钮_MB_OK和MB_YESNO_或图标MB_ICONERROR）) {
-	MessageBoxA(PVZ::gethwnd(), 内容, 标题, 类型（比如按钮_MB_OK和MB_YESNO_或图标MB_ICONERROR）);
+int 信息框(LPCWSTR 内容,LPCWSTR 标题,UINT 类型（比如按钮_MB_OK和MB_YESNO_或图标MB_ICONERROR）) {
+	MessageBoxW(PVZ::gethwnd(), 内容, 标题, 类型（比如按钮_MB_OK和MB_YESNO_或图标MB_ICONERROR）);
 	return 0;
 }
+
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)
 {
 	//////!!!!!!!! 编译不成功的 看这里
@@ -20,19 +21,19 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
     switch (ul_reason_for_call)
     {
     case DLL_PROCESS_ATTACH://dll注入成功执行的代码。
-        DisableThreadLibraryCalls(hModule);
 		if (PVZ::version())
 		{
 			Buttons(hModule);
-			信息框("注入成功！", "", MB_OK | MB_ICONASTERISK);
 			if (PVZ::baseaddress()) {
-				
+				PVZ::setlevelscene(SceneType::Fog);
+				Creater::CreatePlant(1, 1, PlantType::CherryBomb);
+				PVZ::setsun(20);
 			}
 			else
 				return 1;
 		}
 		else
-			信息框("注入失败！", "", MB_OK | MB_ICONERROR);
+			return 0;
     case DLL_THREAD_ATTACH:
     case DLL_THREAD_DETACH:
     case DLL_PROCESS_DETACH:
